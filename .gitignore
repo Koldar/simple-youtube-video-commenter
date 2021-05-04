@@ -9,7 +9,8 @@ venv/
 pmakeup-cache.json
 
 # simple youtube commenter
-client_secret_*
+possible_comments
+client_secret*
 data_file.json
 oauth2.json
 youtube-v3-discoverydocument.json
