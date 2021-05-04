@@ -1,0 +1,15 @@
+.idea/
+dist/
+build/
+simple_youtube_video_commenter.egg-info/
+venv/
+
+# pmakeup
+*PASSWORD*
+pmakeup-cache.json
+
+# simple youtube commenter
+client_secret_*
+data_file.json
+oauth2.json
+youtube-v3-discoverydocument.json
