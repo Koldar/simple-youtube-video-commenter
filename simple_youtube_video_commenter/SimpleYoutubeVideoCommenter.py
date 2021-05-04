@@ -30,9 +30,10 @@ class SimpleYoutubeVideoCommenter(object):
     authenticated user's account and requires requests to use an SSL connection.
     """
 
-    def __init__(self, client_secret_pattern: str, oauth2_file: str, logging_level: str, data_json_file: str):
+    def __init__(self, client_secret_pattern: str, oauth2_file: str, logging_level: str, data_json_file: str, discovery_document_file: str):
         super().__init__()
-        self.client_secret_pattern = client_secret_pattern
+        self.client_secret_file = client_secret_pattern
+        self.discovery_document_file = discovery_document_file
         self.oauth2_file = oauth2_file
         self.logging_level = logging_level
         self.data_json_file = data_json_file
@@ -74,16 +75,7 @@ class SimpleYoutubeVideoCommenter(object):
         :return: path to client secret
         """
 
-        with os.scandir(os.curdir) as it:
-            for entry in it:
-                if not entry.is_file():
-                    continue
-                m = re.search(self.client_secret_pattern, entry.name)
-                if m is None:
-                    continue
-                return entry.name
-            else:
-                raise ValueError(f"Cannot find client secrets files!")
+        return os.path.abspath(self.client_secret_file)
 
     def _get_authenticated_service(self):
         """
@@ -100,7 +92,7 @@ class SimpleYoutubeVideoCommenter(object):
                 See https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
             """)
 
-        lock_variable = "oauth2.json"
+        lock_variable = self.oauth2_file
         storage = Storage(lock_variable)
 
         credentials = storage.get()
@@ -116,7 +108,7 @@ class SimpleYoutubeVideoCommenter(object):
 
         # Trusted testers can download this discovery document from the developers page
         # and it should be in the same directory with the code.
-        with open("../youtube-v3-discoverydocument.json", "r", encoding="utf8") as f:
+        with open(self.discovery_document_file, "r", encoding="utf8") as f:
             doc = f.read()
             return build_from_document(doc, http=credentials.authorize(httplib2.Http()))
 
