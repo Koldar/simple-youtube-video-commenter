@@ -33,10 +33,12 @@ def get_dependencies(domain: str = None) -> Iterable[str]:
     else:
         filename = f"requirements-{domain}.txt"
     if os.path.exists(filename):
+        print(f"DEPENDENCIES OF TYPE {domain} ARE:")
         with open(filename, "r", encoding="utf-8") as fh:
-            dep = fh.readline()
-            dep_name = dep.split("==")[0]
-            yield dep_name + ">=" + dep.split("==")[1]
+            for dep in fh.readlines():
+                dep_name = dep.split("==")[0]
+                print(dep_name + ">=" + dep.split("==")[1].strip())
+                yield dep_name + ">=" + dep.split("==")[1].strip()
 
 
 setuptools.setup(

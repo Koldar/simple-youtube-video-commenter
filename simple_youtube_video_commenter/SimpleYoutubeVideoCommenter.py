@@ -155,8 +155,6 @@ class SimpleYoutubeVideoCommenter(object):
         :param text:
         :return:
         """
-        next_id = self._fetch_next_id_and_increase()
-        text = text.format(next_id=next_id)
         logging.info(f"fetching the channel id from url {channel_url}...")
         channel_id = self._get_channel_id_from_url(channel_url)
         logging.info(f"Got {channel_id}. fetchin video id from video url {video_url}...")
@@ -165,6 +163,9 @@ class SimpleYoutubeVideoCommenter(object):
         youtube = self._get_authenticated_service()
         logging.info(f"polling the structure of the comment threads...")
         parent_id = self._get_video_parent_id(youtube, video_id)
+        logging.info(f"fetching latest id and increasing the id in the storage...")
+        next_id = self._fetch_next_id_and_increase()
+        text = text.format(next_id=next_id)
         logging.info(f"inserting comment...")
         output, author, text, comment = self._insert_comment(
             youtube=youtube,
